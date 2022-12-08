@@ -58,6 +58,7 @@ function App() {
     <>
       <GlobalStyle />
       <Circle bgColor="tomato" />
+      <Circle bgColor="skyblue" borderColor="orange" text="sooyeon" />
     </>
   );
 }
