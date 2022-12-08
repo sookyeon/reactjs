@@ -4,6 +4,7 @@ const Container = styled.div<CircleProps>`
   background-color: ${(props) => props.bgColor};
   width: 200px;
   height: 200px;
+  border-radius: 12px;
 `; //circle은 태그가 아니라 스타일임
 
 //const x = (a:number, b:numver) => a+b 대신 interface를 통해 object shape을 알려줌
