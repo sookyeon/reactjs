@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 
 const Container = styled.div<ContainerProps>`
   background-color: ${(props) => props.bgColor};
@@ -23,10 +24,13 @@ interface ContainerProps {
 }
 
 function Circle({ bgColor, borderColor, text = "default text" }: CircleProps) {
+  //state의 타입은 대개 고정이므로 이같은 방법을 쓸 일은 잘 없음 const [value, setValue] = useState<number | string>(0);
+  const [value, setValue] = useState(0);
   return (
     <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}>
       {text}
-    </Container> //CircleProps에서는 optional인데 ContainerProps에서는 required이라면 undefined 상태일 때 밀어줄 기본값이 있어야 함
+    </Container>
+    //CircleProps에서는 optional인데 ContainerProps에서는 required이라면 undefined 상태일 때 밀어줄 기본값이 있어야 함
   );
 }
 
