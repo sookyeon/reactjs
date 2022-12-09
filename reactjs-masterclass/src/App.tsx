@@ -1,4 +1,4 @@
-import React, { ReactFragment, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 //css의 기본 세팅값을 초기화할 때, 전체 도규먼트에 적용될 스타일은 GlobalStyle
 import { createGlobalStyle } from "styled-components";
@@ -31,7 +31,6 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 ol, ul {
 	list-style: none;
@@ -50,33 +49,25 @@ table {
 }
 * {
   box-sizing: border-box;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }`; //*는 css에서 모든 요소에 대해 적용하고 싶을 때 씀.
 
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+
+const Box = styled.div`
+  width: 200px;
+  height: 100px;
+  border-radius: 12px;
+  background-color: ${(props) => props.theme.bgColor};
+`;
+
 function App() {
-  const [value, setValue] = useState("");
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    //event 인자의 타입이 any인데 any는 가급적 안나오는 게 좋음. 그래서 타입을 지정해줘야 함. 이 필요를 느끼는 것  까지가 배움의 영역인듯
-    const {
-      currentTarget: { value },
-    } = event;
-    setValue(value); //FormEvent에서 엘리먼트를 지정해주자 해결
-  };
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
   return (
-    <>
-      <div>{`Hi, ${value}.`}</div>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="텍스트를 입력해주세요"
-          value={value}
-          onChange={onChange}
-        ></input>
-        <button>로그인</button>
-      </form>
-    </>
+    <Box>
+      <Title>this is theme</Title>
+    </Box>
   );
 }
 
