@@ -1,8 +1,7 @@
-import React from "react";
+import React, { ReactFragment, useState } from "react";
 import styled from "styled-components";
 //css의 기본 세팅값을 초기화할 때, 전체 도규먼트에 적용될 스타일은 GlobalStyle
 import { createGlobalStyle } from "styled-components";
-import Circle from "./Circle";
 
 const GlobalStyle = createGlobalStyle`
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css");
@@ -54,11 +53,29 @@ table {
 }`; //*는 css에서 모든 요소에 대해 적용하고 싶을 때 씀.
 
 function App() {
+  const [value, setValue] = useState("");
+  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+    //event 인자의 타입이 any인데 any는 가급적 안나오는 게 좋음. 그래서 타입을 지정해줘야 함. 이 필요를 느끼는 것  까지가 배움의 영역인듯
+    const {
+      currentTarget: { value },
+    } = event;
+    setValue(value); //FormEvent에서 엘리먼트를 지정해주자 해결
+  };
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
   return (
     <>
-      <GlobalStyle />
-      <Circle bgColor="tomato" />
-      <Circle bgColor="skyblue" borderColor="orange" text="sooyeon" />
+      <div>{`Hi, ${value}.`}</div>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          placeholder="텍스트를 입력해주세요"
+          value={value}
+          onChange={onChange}
+        ></input>
+        <button>로그인</button>
+      </form>
     </>
   );
 }
