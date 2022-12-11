@@ -4,7 +4,8 @@ import "styled-components";
 declare module "styled-components" {
   export interface DefaultTheme {
     bgColor: string; //테마의 각 프로퍼티는 선언된 타입을 지켜야 한다.
-    textColor: string;
-    accentColor: string;
+    primaryColor: string;
+    secondaryColor: string;
+    infoColor: string;
   }
 }

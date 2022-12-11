@@ -27,13 +27,13 @@ const Coin = styled.li`
   }
   &:hover {
     a {
-      color: ${(props) => props.theme.accentColor};
+      color: ${(props) => props.theme.secondaryColor};
     }
   }
 `;
 
 const Title = styled.h1`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.primaryColor};
   padding: 20px;
   font-size: 24px;
 `;
