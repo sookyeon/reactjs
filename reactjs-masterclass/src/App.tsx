@@ -46,6 +46,9 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+a {
+	text-decoration-line: none;
+}
 `; //스타일 컴포넌트처럼 보이나 그와 달리 전역에 적용되는(global) 스타일이라는 의미
   return (
     //Fragment: div를 남발하지 않기 위한 유령 컴포넌트
