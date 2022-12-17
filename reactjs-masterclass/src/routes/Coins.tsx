@@ -59,12 +59,10 @@ interface CoinInterface {
 
 function Coins() {
   //useState hook에서 state의 type을 지정해줌. 배열 state이기 때문에 []도 붙음
-  //길었던 fetcher 코드가 한 줄로 축소
   const { isLoading, data } = useQuery<CoinInterface[]>("allCoins", fetchCoins);
 
   return (
     //&rarr은 html 특수문자를 입력하는 단축키임
-    //Link는 형태적으로 a 태그와 같음.
     <Container>
       <Header>
         <Title>Coins</Title>

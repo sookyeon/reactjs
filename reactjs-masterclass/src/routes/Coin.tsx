@@ -3,7 +3,9 @@
 import { useParams, useLocation, useRouteMatch } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link } from "react-router-dom";
+import { useQuery } from "react-query"; //fetch 시 캐시를 저장하므로 일반적인 경우 로딩은 1회만 하면 됨
+import { fetchCoinInfo, fetchCoinPrice } from "../api";
 
 const Header = styled.div`
   display: flex;
@@ -186,28 +188,18 @@ function Coin() {
   const { coinid } = useParams<RouteParams>(); //URL에 파라미터를 넣기 위해 반드시 필요함
   const { state } = useLocation<RouteState>(); //link state을 쓰기 위해 useLocation hook을 써야함
   const [coinInfo, setcoinInfo] = useState<InfoData>(); //Typescript의 경우 fetch로 불러오는 데이터 각각의 type을 지정해주어야 함. {}은 빈 Object로 인식되므로 interface로 데이터 타입을 지정해줘야 함.
-  const [coinPrice, setcoinPrice] = useState<PriceData>();
-  const [loading, setLoading] = useState<boolean>(true);
   //useRouteMatch는 특정 URL에 있는지 아닌지 판별해 boolean을 도출하는 hook
   const priceMatch = useRouteMatch("/:coinid/price");
   const chartMatch = useRouteMatch("/:coinid/chart");
-  useEffect(() => {
-    (async () => {
-      const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinid}
-      `)
-      ).json();
-      console.log(infoData);
-      const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinid}
-      `)
-      ).json();
-      console.log(priceData);
-      setcoinInfo(infoData);
-      setcoinPrice(priceData);
-      setLoading(false);
-    })();
-  }, [coinid]);
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ["info", coinid],
+    () => fetchCoinInfo(coinid)
+  );
+  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>(
+    ["price", coinid],
+    () => fetchCoinPrice(coinid)
+  );
+  const loading = infoLoading || priceLoading;
 
   return (
     <>
@@ -216,12 +208,12 @@ function Coin() {
         <ImgContainer>
           <img src={`${coinInfo?.logo}`} />
         </ImgContainer>
-        <Title>{state?.name || coinInfo?.name}</Title>
+        <Title>{state?.name || infoData?.name}</Title>
       </Header>
       <BoxContainer>
         <Box>
-          <span>{`Price (1 ${coinInfo?.symbol})`}</span>
-          <div>$ {coinPrice?.quotes.USD.price.toFixed(3)}</div>
+          <span>{`Price (1 ${infoData?.symbol})`}</span>
+          <div>$ {priceData?.quotes.USD.price.toFixed(3)}</div>
         </Box>
         <hr
           style={{
@@ -233,19 +225,19 @@ function Coin() {
         <Box>
           <span>Price ($1)</span>
           <div>
-            {coinPrice?.quotes.USD.price.toFixed(3)}
+            {priceData?.quotes.USD.price.toFixed(3)}
             &nbsp;
-            {coinInfo?.symbol}
+            {infoData?.symbol}
           </div>
         </Box>
       </BoxContainer>
       <TabContainer>
         {/* boolean 타입은 true or false를 판별할 수 있는 연산자와 함께 사용됨! */}
         <Tab isActive={priceMatch !== null}>
-          <Link to={`/${coinInfo?.id}/price`}>price</Link>
+          <Link to={`/${infoData?.id}/price`}>price</Link>
         </Tab>
         <Tab isActive={chartMatch !== null}>
-          <Link to={`/${coinInfo?.id}/chart`}>chart</Link>
+          <Link to={`/${infoData?.id}/chart`}>chart</Link>
         </Tab>
       </TabContainer>
       <Switch>
