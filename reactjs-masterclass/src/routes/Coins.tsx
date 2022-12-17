@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
+import { fetchCoins } from "../api"; //리액트쿼리를 이용해 데이터를 받아오기 위해 필요한 import
 
 const Container = styled.div``;
 
@@ -57,16 +59,8 @@ interface CoinInterface {
 
 function Coins() {
   //useState hook에서 state의 type을 지정해줌. 배열 state이기 때문에 []도 붙음
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await response.json();
-      setCoins(json.slice(0, 100));
-      setLoading(false); //async 함수 내에서 정의된 변수를 외부에서 쓰면 정의되지 않았다고 에러남
-    })();
-  }, []);
+  //길었던 fetcher 코드가 한 줄로 축소
+  const { isLoading, data } = useQuery<CoinInterface[]>("allCoins", fetchCoins);
 
   return (
     //&rarr은 html 특수문자를 입력하는 단축키임
@@ -74,25 +68,29 @@ function Coins() {
     <Container>
       <Header>
         <Title>Coins</Title>
-        {loading ? (
+        {isLoading ? (
           "Loading..."
         ) : (
           <CoinList>
-            {coins.map((coin) => (
-              <Coin key={coin.id}>
-                <Img
-                  src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
-                />
-                <Link
-                  to={{
-                    pathname: `/${coin.id}`,
-                    state: { name: coin.name }, //state은 페이지 이동이 이루어질 때 정보를 미리 건네주는 역할을 하므로 실제로 불러와야할 데이터가 로딩 중이더라도 state으로 받아온 것은 빠르게 띄울 수 있다
-                  }}
-                >
-                  {coin.name} &rarr;
-                </Link>
-              </Coin>
-            ))}
+            {data?.slice(0, 100).map(
+              (
+                coin //undefined일 수 있다 : ?로 해결, useQuery에서 데이터 타입 명시 필요
+              ) => (
+                <Coin key={coin.id}>
+                  <Img
+                    src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
+                  />
+                  <Link
+                    to={{
+                      pathname: `/${coin.id}`,
+                      state: { name: coin.name }, //state은 페이지 이동이 이루어질 때 정보를 미리 건네주는 역할을 하므로 실제로 불러와야할 데이터가 로딩 중이더라도 state으로 받아온 것은 빠르게 띄울 수 있다
+                    }}
+                  >
+                    {coin.name} &rarr;
+                  </Link>
+                </Coin>
+              )
+            )}
           </CoinList>
         )}
       </Header>
